@@ -363,7 +363,11 @@ nload -m
 
 在ubuntu22.04出现`Wayland workaround`错误，可以参考官网解决问题https://symless.com/synergy-help/synergy-on-ubuntu-21-04
 
-## Clash
+## Clash(原版)
+
+原版的Clash可以在没有图形界面的linux上也能使用,就是使用稍微复杂一点
+
+后面也有图像界面的使用方法
 
 ### INSTALL
 
@@ -470,6 +474,42 @@ yaml_data['secret'] = '123456'
 with open('config.yaml', 'w') as file:
     ruamel.yaml.round_trip_dump(yaml_data, file)
 ```
+
+## Clash(桌面版)
+
+clash桌面版支持win、linux、mac，我在win上用的就是这个版本，用着很好，作者更新也很勤,原作目前是英文版本的，windows可以直接到后面汉化的仓库中下载汉化版本，也可以安装官方版本后再进行汉化,linux就得自己下载文件汉化了。
+
+桌面版的用起来舒服很多,因为不用自己配置啦，哈哈。
+
+### Install
+
+[桌面版链接](https://github.com/Fndroid/clash_for_windows_pkg/releases) (到我写这条记录的时候(2023/7/12)为止已经更新到了`0.20.28`版本)
+
+我下载的是`Clash.for.Windows-0.20.28-x64-linux.tar.gz` 然后解压到自己喜欢的目录
+
+赋权后可以直接运行目录下的`cfw` 也可以根据前面的[图标的创建](#图标的创建) 创建桌面图标
+
+如
+
+```properties
+[Desktop Entry]
+Version=0.20.28
+Type=Application
+Name=Clash
+Comment=Clash
+Exec="/home/dbinfun/applications/Clash for Windows/cfw"
+Terminal=false
+Icon=/home/dbinfun/applications/icon/clash.png
+Categories=Development;
+```
+
+图标可以去`iconfont`找 如[clash](https://www.iconfont.cn/search/index?searchType=icon&q=clash&page=1&fromCollection=-1)
+
+### 汉化
+
+汉化的仓库地址是[这里](https://github.com/Z-Siqi/Clash-for-Windows_Chinese)
+
+关闭Clash，到[releases](https://github.com/Z-Siqi/Clash-for-Windows_Chinese/releases) 下载对应版本的[app.asar](https://github.com/Z-Siqi/Clash-for-Windows_Chinese/releases/download/CFW-V0.20.28_CN/app.asar) (我的版本就是`0.20.28` app.7z解压也行)替换clash目录下的`resources`目录下的app.asar,重新启动clash即可
 
 # 开发工具安装
 
