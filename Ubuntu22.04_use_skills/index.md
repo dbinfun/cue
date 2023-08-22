@@ -146,6 +146,43 @@ Categories=Development;
    sudo apt purge wemeet
    ```
 
+# 功能配置
+
+## 网卡配置
+
+```sh
+sudo vim /etc/netplan/00-installer-config.yaml
+```
+
+可以直接修改为类似
+
+```yaml
+network:  
+   version: 2  
+   ethernets:
+     eth0:
+       dhcp4: true 
+```
+
+直接使用dhcp
+
+也可以直接配置为类似
+
+```yaml
+network:
+  version: 2
+  ethernets:
+    eth0:
+      dhcp4: no
+      addresses: [192.168.1.2/24]
+      optional: true
+      gateway4: 192.168.1.1
+      nameservers:
+              addresses: [192.168.1.1,8.8.8.8]
+```
+
+使用静态ip
+
 # 环境的配置
 
 ## apt-get
@@ -527,6 +564,10 @@ rm -rf ~/.config/dconf/user
 ```
 
 # 一些软件的安装
+
+## VirtualBox
+
+[VirtualBox安装](./src/VirtualBox_install.md)
 
 ## 网易云音乐
 
