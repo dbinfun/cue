@@ -727,3 +727,171 @@ sudo pkill Xorg
    ```
 
    
+
+# 删除系统
+
+<font color="red">警告：此操作十分危险</font>
+
+久而久之，双系统使用渐渐不需要了，所以在此记录删除方案
+
+## 删除引导
+
+管理员权限运行windows的cmd并进行以下操作。
+
+```txt
+diskpart	# 进入系统的diskpart组件
+
+list disk	# 查看系统所有的磁盘，并找到windows系统所安装的磁盘
+
+select disk $	# $是windows所安装的磁盘
+
+list partition	# 找到类型为系统的分区
+
+select partition $	# $为类型为系统的分区
+
+assign letter=p	# 将分区分配到磁盘P中，分配到哪个磁盘其实随意，只要不和现有的磁盘冲突即可
+
+exit # 退出diskpat
+
+p:	# 进入P盘
+
+cd efi # 进入引导文件夹
+
+dir # 查看所有引导
+
+rd /s ubuntu	# 删除ubuntu引导，这个时候需要谨慎操作，不要误删其他系统的引导
+
+diskpart # 再次进入到diskpart
+
+select  disk $	# $是之前选择的盘符
+
+select	partition	$	#	$是之前选择的分区
+
+remove letter=p # 删除P盘
+```
+
+以上来自：[【卸载双系统中的linux系统】删除引导_卸载双系统后 开机不想要引导进入linux-CSDN博客](https://blog.csdn.net/qq_41879343/article/details/104692692)
+
+如下是我的卸载记录
+
+```txt
+C:\WINDOWS\system32>diskpart.exe
+
+Microsoft DiskPart 版本 10.0.19041.3636
+
+Copyright (C) Microsoft Corporation.
+在计算机上: DESKTOP-R3VUTQH
+
+DISKPART> list disk
+
+  磁盘 ###  状态           大小     可用     Dyn  Gpt
+  --------  -------------  -------  -------  ---  ---
+  磁盘 0    联机              476 GB      0 B
+  磁盘 1    联机              476 GB  5120 KB        *
+  磁盘 2    联机               58 GB      0 B
+
+DISKPART> select disk 1
+
+磁盘 1 现在是所选磁盘。
+
+DISKPART> list partition
+
+  分区 ###       类型              大小     偏移量
+  -------------  ----------------  -------  -------
+  分区      1    系统                 260 MB  1024 KB
+  分区      2    保留                  16 MB   261 MB
+  分区      3    主要                 475 GB   277 MB
+  分区      4    恢复                 691 MB   476 GB
+
+DISKPART> select partition 1
+
+分区 1 现在是所选分区。
+
+DISKPART> assign letter=p
+
+DiskPart 成功地分配了驱动器号或装载点。
+
+DISKPART> exit
+
+退出 DiskPart...
+
+C:\WINDOWS\system32>p:
+
+P:\>cd efi
+
+P:\EFI>dir
+ 驱动器 P 中的卷是 SYSTEM
+ 卷的序列号是 DABF-A3EA
+
+ P:\EFI 的目录
+
+2020/07/26  13:57    <DIR>          .
+2020/07/26  13:57    <DIR>          ..
+2023/03/26  19:08    <DIR>          Boot
+2020/07/26  13:57    <DIR>          Microsoft
+2020/07/27  05:45    <DIR>          HP
+2023/03/26  19:08    <DIR>          ubuntu
+               0 个文件              0 字节
+               6 个目录    160,264,192 可用字节
+
+P:\EFI>rd /s ubuntu
+ubuntu, 是否确认(Y/N)? Y
+
+P:\EFI>diskpart
+
+Microsoft DiskPart 版本 10.0.19041.3636
+
+Copyright (C) Microsoft Corporation.
+在计算机上: DESKTOP-R3VUTQH
+
+DISKPART> select disk 1
+
+磁盘 1 现在是所选磁盘。
+
+DISKPART> select partition 1
+
+分区 1 现在是所选分区。
+
+DISKPART> remove letter=p
+
+DiskPart 成功地删除了驱动器号或装载点。
+```
+
+删除引导区后，重启电脑，便不会出现选择引导的提示，之后就可以使用磁盘管理器格式化相关分区了，但是efi分区无法直接删除，需要通过以下方式删除(管理员运行)。
+
+```txt
+C:\WINDOWS\system32>diskpart
+
+Microsoft DiskPart 版本 10.0.19041.3636
+
+Copyright (C) Microsoft Corporation.
+在计算机上: DESKTOP-R3VUTQH
+
+DISKPART> list disk
+
+  磁盘 ###  状态           大小     可用     Dyn  Gpt
+  --------  -------------  -------  -------  ---  ---
+  磁盘 0    联机              476 GB   476 GB
+  磁盘 1    联机              476 GB  5120 KB        *
+  磁盘 2    联机               58 GB      0 B
+
+DISKPART> select disk 0 
+
+磁盘 0 现在是所选磁盘。
+
+DISKPART> list partition
+
+  分区 ###       类型              大小     偏移量
+  -------------  ----------------  -------  -------
+  分区      1    系统                 512 MB  1024 KB
+  分区      0    扩展的                476 GB   513 MB
+
+DISKPART> select partition 1
+
+分区 1 现在是所选分区。
+
+DISKPART> delete partition
+
+DiskPart 成功地删除了所选分区。
+```
+
