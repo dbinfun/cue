@@ -378,7 +378,7 @@ docker run --name redis \
 docker exec -it redis redis-cli
 ```
 
-# 一些工具
+# 一些工具或软件的安装
 
 ## 显示网速
 
@@ -406,7 +406,7 @@ nload -m
 
 后面也有图像界面的使用方法
 
-### INSTALL
+**INSTALL**
 
 clash是一个很有用的代理工具，这里介绍简单的安装(不做透明代理，需要自己设置代理)。
 
@@ -433,7 +433,7 @@ clash会在目录下创建`Country.mmdb`文件,如果无法下载也可以去[�
 
 之后clash就已经开始运行了,可以通过转发流量到7890端口让clash代理请求
 
-### Service Start
+**Service Start**
 
 使用服务启动clash
 
@@ -480,7 +480,7 @@ systemctl stop clash.service # 停止
 
 也有docker的安装方案在官方[Wiki](https://dreamacro.github.io/clash/introduction/service.html#docker)
 
-### GUI Manage
+GUI **Manage**
 
 我们需要一个图形管理页面,我用的是[yacd](https://github.com/haishanh/yacd)
 
@@ -518,7 +518,7 @@ clash桌面版支持win、linux、mac，我在win上用的就是这个版本，�
 
 桌面版的用起来舒服很多,因为不用自己配置啦，哈哈。
 
-### Install
+**Install**
 
 [桌面版链接](https://github.com/Fndroid/clash_for_windows_pkg/releases) (到我写这条记录的时候(2023/7/12)为止已经更新到了`0.20.28`版本)
 
@@ -542,13 +542,11 @@ Categories=Development;
 
 图标可以去`iconfont`找 如[clash](https://www.iconfont.cn/search/index?searchType=icon&q=clash&page=1&fromCollection=-1)
 
-### 汉化
+**汉化**
 
 汉化的仓库地址是[这里](https://github.com/Z-Siqi/Clash-for-Windows_Chinese)
 
 关闭Clash，到[releases](https://github.com/Z-Siqi/Clash-for-Windows_Chinese/releases) 下载对应版本的[app.asar](https://github.com/Z-Siqi/Clash-for-Windows_Chinese/releases/download/CFW-V0.20.28_CN/app.asar) (我的版本就是`0.20.28` app.7z解压也行)替换clash目录下的`resources`目录下的app.asar,重新启动clash即可
-
-# 开发工具安装
 
 ## Navicat
 
@@ -562,8 +560,6 @@ Categories=Development;
 rm -rf ~/.config/navicat
 rm -rf ~/.config/dconf/user
 ```
-
-# 一些软件的安装
 
 ## VirtualBox
 
@@ -626,7 +622,34 @@ sudo dpkg-reconfigure wireshark-common
 sudo usermod -aG wireshark dbinfun
 ```
 
+## Wine
 
+wine可以在linux上运行一些Windows程序,有时候会很有用
+
+**wine安装**
+
+同过命令`sudo apt-get install wine`安装
+
+**wine 安装软件**
+
+1. 使用`wine ****.exe`可以直接运行对应的exe文件
+2. 使用`msiexec -i ****.msi`可以运行安装程序安装软件
+
+**卸载软件**
+
+通过`wine ****.exe` 直接运行的删掉文件即可,使用`msiexec -i`安装的程序通过运行`wine uninstaller`查看可以卸载的程序,然后卸载
+
+**卸载Wine**
+
+```sh
+sudo apt-get remove --purge wine
+rm -rf ~/.wine
+rm -rf ~/.config/wine
+```
+
+
+
+****
 
 # 使用技巧
 
