@@ -148,6 +148,15 @@ Categories=Development;
 
 # 功能配置
 
+## 代理配置
+
+当前shell临时设置代理可以使用
+
+```shell
+export http_proxy=http://127.0.0.1:7890/
+export https_proxy=http://127.0.0.1:7890/
+```
+
 ## 网卡配置
 
 ```sh
@@ -166,7 +175,7 @@ network:
 
 直接使用dhcp
 
-也可以直接配置为类似
+也可以直接配置为类似以下内容，使用静态ip
 
 ```yaml
 network:
@@ -181,7 +190,23 @@ network:
               addresses: [192.168.1.1,8.8.8.8]
 ```
 
-使用静态ip
+## 自动挂载磁盘
+
+有时需要自动挂载额外磁盘,参考自[他人博客](https://cloud.tencent.com/developer/article/2137706)，此处省略分区
+
+以下命令挂载磁盘到指定位置`/storage`,`/dev/vdb1`通过`sudo fdisk -l`查看设备名称
+
+```shell
+mount /dev/vdb1 /storage
+```
+
+设置开机自动挂载,注意文件类型可能是`ext4`,`ntfs`等等,可以通过`lsblk -f`查看
+
+```shell
+ echo '/dev/vdb1 /storage ext4 defaults 0 0' >> /etc/fstab
+```
+
+
 
 # 环境的配置
 
@@ -281,11 +306,33 @@ export PATH=$PATH:$GOBIN
 
 ## Doker
 
-安装阿里云官方的[教程安装docker-ce](https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.2cd51b11kEu5bg)
+安装阿里云官方的[教程安装docker-ce](https://developer.aliyun.com/mirror/docker-ce?spm=a2c6h.13651102.0.0.2cd51b11kEu5bg) 或者[docker官方](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository)
+
+### Docker 配置代理
+
+由于一些原因，一些dokcer镜像源无法使用了，于是需要通过配置代理的方式访问官方仓库,可参考[这里](https://www.cnblogs.com/Chary/p/18096678)
+
+docker pull时，是由守护进程dockerd来执行,所以新建`/etc/systemd/system/docker.service.d`目录，在其下建立人一`.conf`文件
+
+```shell
+sudo mkdir -p /etc/systemd/system/docker.service.d
+sudo touch /etc/systemd/system/docker.service.d/proxy.conf
+```
+
+添加以下内容,其中`http://127.0.0.1:7890/`为具体代理地址
+
+```ini
+[Service]
+Environment="HTTP_PROXY=http://127.0.0.1:7890/"
+Environment="HTTPS_PROXY=http://127.0.0.1:7890/"
+Environment="NO_PROXY=localhost,127.0.0.1,.example.com"
+```
+
+### Docker 运行容器
 
 感觉使用docker运行一些持久化工具更方便所以我装了mysql和redis
 
-### Mysql
+#### Mysql
 
 正常运行mysql需要先启动一次mysql，然后进去将部分类容拷贝出来
 
@@ -339,7 +386,7 @@ ssl-key=/etc/mysql/server-key.pem
 
 
 
-### Redis
+#### Redis
 
 创建`/home/redis/data`目录和`/home/redis/redis.conf`文件
 
@@ -410,7 +457,7 @@ nload -m
 
 clash是一个很有用的代理工具，这里介绍简单的安装(不做透明代理，需要自己设置代理)。
 
-到[GitHub releases](https://github.com/Dreamacro/clash/releases/) 下载对应的版本，我的是amd64,所以下载的[这个版本](https://github.com/Dreamacro/clash/releases/download/v1.16.0/clash-linux-amd64-v1.16.0.gz)
+~~到[GitHub releases](https://github.com/Dreamacro/clash/releases/) 下载对应的版本，我的是amd64,所以下载的[这个版本](https://github.com/Dreamacro/clash/releases/download/v1.16.0/clash-linux-amd64-v1.16.0.gz)~~ 作者已经删除代码
 
 下载后解压并重命名放到`/usr/bin`目录下,并授权运行
 
@@ -443,7 +490,7 @@ clash会在目录下创建`Country.mmdb`文件,如果无法下载也可以去[�
 vim /etc/systemd/system/clash.service
 ```
 
-写入以下内容
+写入以下内容,也可以使用`-f`指定配置文件
 
 ```properties
 [Unit]
@@ -487,7 +534,7 @@ GUI **Manage**
 可以直接到release页面下载解压然后使用nginx等运行网页，也可以使用docker，docker更方便
 
 ```sh
-sudo docker run -d -p 80:80 --name clashmanage haishanh/yacd
+sudo docker run -d -p 8080:80 --name clashmanage haishanh/yacd
 ```
 
 访问80端口填写地址和密码(地址和密码在配置文件`config.yaml`的 `external-controller` 和`secret`中设置)就可以看到管理页面了。
@@ -547,6 +594,24 @@ Categories=Development;
 汉化的仓库地址是[这里](https://github.com/Z-Siqi/Clash-for-Windows_Chinese)
 
 关闭Clash，到[releases](https://github.com/Z-Siqi/Clash-for-Windows_Chinese/releases) 下载对应版本的[app.asar](https://github.com/Z-Siqi/Clash-for-Windows_Chinese/releases/download/CFW-V0.20.28_CN/app.asar) (我的版本就是`0.20.28` app.7z解压也行)替换clash目录下的`resources`目录下的app.asar,重新启动clash即可
+
+## V2ray
+
+使用docker运行
+
+```shell
+docker run -d \
+  -p 2017:2017 \
+  -p 10808-10810:20170-20172 \
+  --restart=always \
+  --name v2raya \
+  -e V2RAYA_V2RAY_BIN=/usr/local/bin/v2ray \
+  -e V2RAYA_LOG_FILE=/tmp/v2raya.log \
+  -v ${PWD}/data:/etc/v2raya \
+  mzz2017/v2raya
+```
+
+进入网页配置好端口代理即可,全局透明代理见[官方文档](https://v2raya.org/docs/prologue/installation/docker/)
 
 ## Navicat
 
@@ -647,7 +712,13 @@ rm -rf ~/.wine
 rm -rf ~/.config/wine
 ```
 
+## keeweb
 
+密码管理器，linux端较优选择,[keeweb](https://github.com/keeweb/keeweb/releases/tag/v1.18.7)直接下载AppImage可以直接运行
+
+## cryptomator
+
+加密工具,可以将数据加密/解密挂载,使用用于需要保存保密资料的u盘等等,[cryptomator](https://cryptomator.org/downloads/) AppImage也可以直接运行
 
 ****
 
