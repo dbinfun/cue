@@ -558,6 +558,18 @@ yaml_data['secret'] = '123456'
 with open('config.yaml', 'w') as file:
     ruamel.yaml.round_trip_dump(yaml_data, file)
 ```
+再附上一个更新用的shell脚本
+
+```shell
+wget "https://example.com/config" -O config.yaml --no-check-certificate
+RETURN_CODE=$?
+if [ $RETURN_CODE -eq 0 ]; then
+    echo "重启服务"
+    sudo systemctl restart clash
+else
+    exit 1
+```
+
 
 ## Clash(桌面版)
 
