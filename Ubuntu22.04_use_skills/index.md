@@ -192,7 +192,7 @@ network:
 
 ## 自动挂载磁盘
 
-有时需要自动挂载额外磁盘,参考自[他人博客](https://cloud.tencent.com/developer/article/2137706)，此处省略分区
+有时需要自动挂载额外磁盘,参考自[他人博客](https://blog.csdn.net/wwlswj/article/details/106479600)，此处省略分区
 
 以下命令挂载磁盘到指定位置`/storage`,`/dev/vdb1`通过`sudo fdisk -l`查看设备名称
 
@@ -203,7 +203,7 @@ mount /dev/vdb1 /storage
 设置开机自动挂载,注意文件类型可能是`ext4`,`ntfs`等等,可以通过`lsblk -f`查看
 
 ```shell
- echo '/dev/vdb1 /storage ext4 defaults 0 0' >> /etc/fstab
+ echo '/dev/sda1 /storage ntfs-3g uid=dbin,gid=dbin,user,auto,rw,dev,exec,suid,sync,utf8,dmask=077,fmask=033 0 0' >> /etc/fstab
 ```
 
 
