@@ -82,3 +82,15 @@ mokutil --test-key MOK.der
 ## 最后
 
 重启后就可以运行Virtualbox正常创建网卡了,如果不行再运行一次`sudo modprobe vboxnetadp`
+
+## 其他问题
+
+### host网卡自定义网段
+
+virtualbox host网卡网段被限制，需要添加/修改`/etc/vbox/networks.conf`
+
+```
+* 10.0.0.0/8 192.168.0.0/16
+```
+
+[参考](https://cloud.tencent.com/developer/ask/sof/107548811)
