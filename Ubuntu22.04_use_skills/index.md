@@ -116,6 +116,12 @@ Categories=Development;
 
 通过上面的类容，我们在桌面新建`txt`文档，修改对应的应用路径，和图标,修改后缀为`.desktop`，使用赋权命令或者右键赋权后就可以双击运行了。
 
+如果不能运行，修改可执行后还是提醒.desktop文件不受信任,可以使用以下命令添加到信任
+
+```shell
+gio set yourfile.desktop metadata::trusted true
+```
+
 另外，在Ubuntu 20.04中，应用程序的desktop文件通常存储在以下几个文件夹中：
 
 1. `/usr/share/applications` - 这个文件夹中存储了系统安装的所有应用程序的.desktop文件，包括软件中心中的应用程序。
